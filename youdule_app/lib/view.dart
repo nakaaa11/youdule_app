@@ -36,32 +36,35 @@ class _MyAppState extends State<MyApp> {
           Text('aaa'),
           Text('bbb'),
         ])),
-        body: Column(
-          children: [
-            Card(
-              child: Center(
-                child: FutureBuilder<Album>(
-                  future: futureAlbum,
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      return Column(children: <Widget>[
-                        Text(snapshot.data!.title),
-                        // Text(snapshot.data!.description),
-                        Image(image: NetworkImage(snapshot.data!.thumbnails)),
-                        // Link({required Uri: 'https://www.youtube.com/channel/${snapshot.data!.channelId}', builder: builder}),
-                        Text(snapshot.data!.channelTitle),
-                        Text(snapshot.data!.channelId),
-                        // print(snapshot.data!.channelId),
+        body: ListView(
+          children: <Widget>[
+            FutureBuilder<Album>(
+              future: futureAlbum,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return ListView(
+                      shrinkWrap: true,
+                      physics: BouncingScrollPhysics(),
+                      children: <Widget>[
+                        // for()
+                        ListTile(
+                          title: Text(snapshot.data!.title),
+                          leading: Image.network(snapshot.data!.thumbnails),
+                          subtitle: Text(snapshot.data!.channelTitle),
+                          // trailing: Text(snapshot.data!.channelId)
+                        ),
                       ]);
-                    } else if (snapshot.hasError) {
-                      return Text('${snapshot.error}');
-                    }
+                  // Text(snapshot.data!.description),
 
-                    // By default, show a loading spinner.
-                    return const CircularProgressIndicator();
-                  },
-                ),
-              ),
+                  // Link({required Uri: 'https://www.youtube.com/channel/${snapshot.data!.channelId}', builder: builder}),
+                  // print(snapshot.data!.channelId),
+                } else if (snapshot.hasError) {
+                  return Text('${snapshot.error}');
+                }
+
+                // By default, show a loading spinner.
+                return const CircularProgressIndicator();
+              },
             ),
           ],
         ),
